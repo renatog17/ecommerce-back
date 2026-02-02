@@ -51,10 +51,9 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(false) // colocar true se estiver usando HTTPS
                 .path("/")
-                .sameSite("Strict") // ou Lax, dependendo do seu fluxo
+                .sameSite("Lax") // ou Lax, dependendo do seu fluxo
                 .maxAge(86400) // 1 dia, opcional
                 .build();
-
 
         return ResponseEntity
         			.ok()

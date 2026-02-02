@@ -28,6 +28,7 @@ public class UserController {
 	
 	@PostMapping
 	public ResponseEntity<?> postUser(@RequestBody @Valid PostUserDTO postUserDTO, UriComponentsBuilder uriComponentsBuilder){
+		System.out.println("aqui");
 		User user = userService.save(postUserDTO.toModel());
 		URI uri = uriComponentsBuilder
 				.path("/user/{id}")
