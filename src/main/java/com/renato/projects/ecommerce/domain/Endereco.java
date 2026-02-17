@@ -32,7 +32,21 @@ public class Endereco {
 	private String cidade;
 	private String estado;
 	private String cep;
+	private Boolean ativo = true;
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
+	public Endereco(String logradouro, String numero, String complemento, String bairro, String cidade, String estado,
+			String cep) {
+		super();
+		this.logradouro = logradouro;
+		this.numero = numero;
+		this.complemento = complemento;
+		this.bairro = bairro;
+		this.cidade = cidade;
+		this.estado = estado;
+		this.cep = cep;
+	}
+	
+	
 }

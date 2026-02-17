@@ -6,10 +6,24 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import lombok.Getter;
+
+@Entity
+@Getter
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	private User user;
+	@OneToOne(mappedBy = "user")
+	private Cliente cliente;
 
 	public UserDetailsImpl(User user) {
 		super();

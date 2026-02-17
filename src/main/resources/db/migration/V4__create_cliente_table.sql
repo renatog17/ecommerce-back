@@ -5,6 +5,7 @@ CREATE TABLE cliente (
     telefone VARCHAR(50),
     data_cadastro DATE NOT NULL,
     cpf VARCHAR(14) NOT NULL,
+    ativo BOOLEAN NOT NULL,
     user_id BIGINT,
     CONSTRAINT uk_cliente_cpf UNIQUE (cpf),
     CONSTRAINT uk_cliente_email UNIQUE (email),

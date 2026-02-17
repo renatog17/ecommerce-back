@@ -40,10 +40,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
+                        //auth
+                		.requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user").permitAll()
                         .requestMatchers("/email/**").permitAll()
                         .requestMatchers("/password/**").permitAll()
+                        //public
+                        .requestMatchers("/produtos").permitAll()
+                        .requestMatchers("/categorias/**").permitAll()
                         //.requestMatchers("/user").authenticated()
                         .anyRequest().authenticated()
                 )

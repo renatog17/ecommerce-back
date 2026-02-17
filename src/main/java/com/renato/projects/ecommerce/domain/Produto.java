@@ -38,5 +38,5 @@ public class Produto {
 	private Categoria categoria;
 	@OneToMany(mappedBy = "produto")
 	private List<ProdutoPedido> produtoPedido;
-	
+	private Boolean ativo = true;
 }

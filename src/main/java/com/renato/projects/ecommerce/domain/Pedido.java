@@ -34,7 +34,7 @@ public class Pedido {
 	@EqualsAndHashCode.Include
 	private Long id;
 	private BigDecimal valorTotal;
-	private LocalDate dataIniciacao;
+	private LocalDate dataIniciacao = LocalDate.now();
 	private LocalDate dataCriacao;
 	@Enumerated(EnumType.STRING)
 	private Status status;

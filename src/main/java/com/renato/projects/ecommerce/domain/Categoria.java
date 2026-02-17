@@ -29,4 +29,5 @@ public class Categoria {
 	private String descricao;
 	@OneToMany(mappedBy = "categoria")
 	private List<Produto> produto;
+	private Boolean ativo = true;
 }

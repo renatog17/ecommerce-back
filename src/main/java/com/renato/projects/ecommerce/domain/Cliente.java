@@ -36,10 +36,9 @@ public class Cliente {
 	@OneToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	
 	@OneToMany(mappedBy = "cliente")
 	private List<Endereco> endereco;
 	@OneToMany(mappedBy = "cliente")
 	private List<Pedido> pedidos;
-	
+	private Boolean ativo = true;
 }

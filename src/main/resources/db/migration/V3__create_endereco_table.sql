@@ -7,5 +7,6 @@ CREATE TABLE endereco (
     cidade VARCHAR(100) NOT NULL,
     estado VARCHAR(50) NOT NULL,
     cep VARCHAR(20) NOT NULL,
-    cliente_id BIGINT NOT NULL
+    cliente_id BIGINT NOT NULL,
+    ativo BOOLEAN NOT NULL
 );
