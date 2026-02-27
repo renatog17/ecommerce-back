@@ -2,10 +2,12 @@ package com.renato.projects.ecommerce.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.renato.projects.ecommerce.domain.enums.Status;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -41,6 +43,6 @@ public class Pedido {
 	@ManyToOne
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
-	@OneToMany(mappedBy = "pedido")
-	private List<ProdutoPedido> produtosPedidos;
+	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+	private List<ProdutoPedido> produtosPedidos = new ArrayList<>();
 }

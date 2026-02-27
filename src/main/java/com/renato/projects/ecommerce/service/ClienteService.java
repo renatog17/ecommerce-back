@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.renato.projects.ecommerce.controller.dto.cliente.PostClienteDTO;
 import com.renato.projects.ecommerce.controller.dto.cliente.PutClienteDTO;
 import com.renato.projects.ecommerce.controller.dto.cliente.ReadClienteDTO;
 import com.renato.projects.ecommerce.domain.Cliente;
@@ -24,11 +23,11 @@ public class ClienteService {
 		this.authenticatedUserService = authenticatedUserService;
 	}
 
-	public ReadClienteDTO salvarCliente (PostClienteDTO postClienteDTO) {
-		Cliente cliente = postClienteDTO.toModel();
-		clienteRepository.save(cliente);
-		return new ReadClienteDTO(cliente);
+	@Transactional
+	public Cliente salvarCliente (Cliente cliente) {
+		return clienteRepository.save(cliente);
 	}
+	
 	public ReadClienteDTO buscarCliente(Long id) {
 		
 		Cliente cliente = clienteRepository.findById(id)

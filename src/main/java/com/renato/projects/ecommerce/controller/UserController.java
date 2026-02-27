@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.renato.projects.ecommerce.controller.dto.user.PostUserDTO;
-import com.renato.projects.ecommerce.domain.User;
+import com.renato.projects.ecommerce.domain.UserDetailsImpl;
 import com.renato.projects.ecommerce.service.UserService;
 
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ import jakarta.validation.Valid;
 public class UserController {
 
 	private final UserService userService;
-
+	
 	public UserController(UserService userService) {
 		super();
 		this.userService = userService;
@@ -28,7 +28,8 @@ public class UserController {
 	
 	@PostMapping
 	public ResponseEntity<?> postUser(@RequestBody @Valid PostUserDTO postUserDTO, UriComponentsBuilder uriComponentsBuilder){
-		User user = userService.save(postUserDTO.toModel());
+		UserDetailsImpl user = userService.save(postUserDTO);
+		
 		URI uri = uriComponentsBuilder
 				.path("/user/{id}")
 				.buildAndExpand(user.getId())

@@ -16,12 +16,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.renato.projects.ecommerce.controller.dto.cliente.PostClienteDTO;
 import com.renato.projects.ecommerce.controller.dto.cliente.PutClienteDTO;
 import com.renato.projects.ecommerce.controller.dto.cliente.ReadClienteDTO;
+import com.renato.projects.ecommerce.domain.Cliente;
 import com.renato.projects.ecommerce.service.ClienteService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("clientes")
+@RequestMapping("/clientes")
 public class ClienteController {
 
 	private ClienteService clienteService;
@@ -34,14 +35,16 @@ public class ClienteController {
 	@PostMapping
 	public ResponseEntity<?> cadastrarCliente(@Valid @RequestBody PostClienteDTO postClienteDTO, 
 			UriComponentsBuilder uriComponentsBuilder){
-		ReadClienteDTO cliente = clienteService.salvarCliente(postClienteDTO);
-		URI uri = uriComponentsBuilder.path("/tenant/{id}").buildAndExpand(cliente.id()).toUri();
+		Cliente cliente = clienteService.salvarCliente(postClienteDTO.toModel());
+		URI uri = uriComponentsBuilder.path("/tenant/{id}").buildAndExpand(cliente.getId()).toUri();
 		return ResponseEntity.created(uri).build();
 	}
 	
 	@GetMapping()
 	public ResponseEntity<?> buscarClienteAuthenticated(){
-		return ResponseEntity.ok(clienteService.buscarClienteAuthenticated());
+		Cliente cliente = clienteService.buscarClienteAuthenticated();
+		ReadClienteDTO readClienteDTO = new ReadClienteDTO(cliente);
+		return ResponseEntity.ok(readClienteDTO);
 	}
 	
 	@PutMapping

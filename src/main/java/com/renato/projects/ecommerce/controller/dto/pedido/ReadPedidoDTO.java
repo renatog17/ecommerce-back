@@ -11,7 +11,7 @@ public record ReadPedidoDTO(
 		Long id,
 		BigDecimal valorTotal,
 		Status status,
-		List<ReadProdutoPedidoDTO> produtos
+		List<ReadProdutoPedidoDTO> itens
 		) {
 
 	public ReadPedidoDTO(Pedido pedido) {

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.renato.projects.ecommerce.controller.dto.password.ChangePasswordDTO;
 import com.renato.projects.ecommerce.controller.dto.password.RequestPasswordResetDTO;
-import com.renato.projects.ecommerce.domain.User;
+import com.renato.projects.ecommerce.domain.UserDetailsImpl;
 import com.renato.projects.ecommerce.repository.UserRepository;
 import com.renato.projects.ecommerce.service.email.EmailData;
 import com.renato.projects.ecommerce.service.email.EmailService;
@@ -42,14 +42,14 @@ public class PasswordController {
 
 	@PostMapping("/forget")
 	public ResponseEntity<?> requestPasswordReset(@RequestBody RequestPasswordResetDTO request) {
-		Optional<User> optionalUser = userRepository.findByEmail(request.email());
+		Optional<UserDetailsImpl> optionalUser = userRepository.findByEmail(request.email());
 		
 		if (optionalUser.isEmpty()) {
 			// sucesso fake, para não expor se o email existe ou não
 			return ResponseEntity.ok().build();
 		}
 
-		User user = optionalUser.get();
+		UserDetailsImpl user = optionalUser.get();
 
 		String token = UUID.randomUUID().toString();
 		user.setPasswordResetToken(token);
@@ -68,12 +68,12 @@ public class PasswordController {
 	@Transactional
 	public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO dto) {
 		
-	    Optional<User> optionalUser = userRepository.findByEmail(dto.email());
+	    Optional<UserDetailsImpl> optionalUser = userRepository.findByEmail(dto.email());
 	    if (optionalUser.isEmpty()) {
 	        return ResponseEntity.badRequest().body("Invalid request");
 	    }
 
-	    User user = optionalUser.get();
+	    UserDetailsImpl user = optionalUser.get();
 
 	    if (user.getPasswordResetToken() == null ||
 	        user.getPasswordResetTokenExpiry() == null ||

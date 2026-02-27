@@ -29,13 +29,12 @@ public class Cliente {
 	@EqualsAndHashCode.Include
 	private Long id;
 	private String nome;
-	private String email;
 	private String telefone;
 	private LocalDate dataCadastro;
 	private String cpf;
 	@OneToOne
 	@JoinColumn(name = "user_id")
-	private User user;
+	private UserDetailsImpl user;
 	@OneToMany(mappedBy = "cliente")
 	private List<Endereco> endereco;
 	@OneToMany(mappedBy = "cliente")

@@ -8,11 +8,12 @@ public record ReadProdutoPedidoDTO(
 		Long id,
 		BigDecimal valorUnitario,
 		Long quantidade,
-		Long produtoId
+		Long produtoId,
+		String produtoNome
 		) {
 	
 	public ReadProdutoPedidoDTO(ProdutoPedido pp) {
-		this(pp.getId(), pp.getValorUnitario(), pp.getQuantidade(), pp.getProduto().getId());
+		this(pp.getId(), pp.getValorUnitario(), pp.getQuantidade(), pp.getProduto().getId(), pp.getProduto().getNome());
 	}
 
 }

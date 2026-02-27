@@ -1,50 +1,83 @@
 package com.renato.projects.ecommerce.domain;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 @Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(name = "users")
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Long id;
-	private User user;
-	@OneToOne(mappedBy = "user")
-	private Cliente cliente;
+	@Column(unique = true, nullable = false)
+	private String email;
+	private String password;
+	private String name;
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cliente cliente;
+	//Email{
+	@Column(nullable = false)
+	private boolean verified = false;
+	@Column(unique = true)
+	private String verificationToken;
+	@Column
+	private Instant tokenExpiry;
+	//}fim email
+	//senha{
+	@Column(unique = true)
+    private String passwordResetToken;
+    @Column
+    private Instant passwordResetTokenExpiry;
+    //}fim senha
+	
 
-	public UserDetailsImpl(User user) {
-		super();
-		this.user = user;
+	public UserDetailsImpl(String email, String password) {
+		this.email = email;
+		this.password = password;
 	}
+
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(); // roles, se tiver
+		// TODO Auto-generated method stub
+		return List.of();
 	}
 
-	@Override
-	public String getPassword() {
-		return user.getPassword();
-	}
 
 	@Override
 	public String getUsername() {
-		return user.getEmail();
+		
+		return this.email;
 	}
-
+	@Override
+	public String getPassword() {
+		return this.password;
+	}
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
@@ -62,7 +95,6 @@ public class UserDetailsImpl implements UserDetails {
 
 	@Override
 	public boolean isEnabled() {
-		return user.isVerified();
+		return this.isVerified();
 	}
-
 }

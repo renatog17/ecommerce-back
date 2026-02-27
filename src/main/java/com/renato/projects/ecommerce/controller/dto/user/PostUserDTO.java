@@ -1,6 +1,7 @@
 package com.renato.projects.ecommerce.controller.dto.user;
 
-import com.renato.projects.ecommerce.domain.User;
+import com.renato.projects.ecommerce.controller.dto.cliente.PostClienteDTO;
+import com.renato.projects.ecommerce.domain.UserDetailsImpl;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,9 +13,10 @@ public record PostUserDTO(
 		String email, 
 		@NotBlank(message = "Password is mandatory")
 		@Size(min = 8, max = 16)
-		String password) {
+		String password,
+		PostClienteDTO cliente) {
 
-	public User toModel() {
-		return new User(email, password);
+	public UserDetailsImpl toModel() {
+		return new UserDetailsImpl(email, password);
 	}
 }

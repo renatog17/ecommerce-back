@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.renato.projects.ecommerce.domain.User;
+import com.renato.projects.ecommerce.domain.UserDetailsImpl;
 
-public interface UserRepository extends JpaRepository<User, Long>{
+public interface UserRepository extends JpaRepository<UserDetailsImpl, Long>{
 
-	Optional<User> findByEmail(String email);
-	Optional<User> findByVerificationToken(String verificationToken);
+	Optional<UserDetailsImpl> findByEmail(String email);
+	Optional<UserDetailsImpl> findByVerificationToken(String verificationToken);
 }

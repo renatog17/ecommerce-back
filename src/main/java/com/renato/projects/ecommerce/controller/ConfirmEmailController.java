@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.renato.projects.ecommerce.controller.dto.confirmemail.ConfirmDTO;
 import com.renato.projects.ecommerce.controller.dto.confirmemail.ResendDTO;
-import com.renato.projects.ecommerce.domain.User;
+import com.renato.projects.ecommerce.domain.UserDetailsImpl;
 import com.renato.projects.ecommerce.repository.UserRepository;
 import com.renato.projects.ecommerce.service.email.EmailData;
 import com.renato.projects.ecommerce.service.email.EmailService;
@@ -39,12 +39,12 @@ public class ConfirmEmailController {
 
 	@PostMapping("/verify")
 	public ResponseEntity<?> confirmEmail(@RequestBody ConfirmDTO confirmDTO) {
-		Optional<User> optionalUser = userRepository.findByVerificationToken(confirmDTO.token());
+		Optional<UserDetailsImpl> optionalUser = userRepository.findByVerificationToken(confirmDTO.token());
 		if (optionalUser.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Token inválido");
 		}
 
-		User user = optionalUser.get();
+		UserDetailsImpl user = optionalUser.get();
 
 		if (user.getTokenExpiry().isBefore(Instant.now())) {
 			return ResponseEntity.status(HttpStatus.GONE).body("Token expirado");
@@ -60,13 +60,13 @@ public class ConfirmEmailController {
 
 	@PostMapping("/resend")
 	public ResponseEntity<?> resendLink(@RequestBody ResendDTO resendDTO) {
-		Optional<User> optionalUser = userRepository.findByEmail(resendDTO.email());
+		Optional<UserDetailsImpl> optionalUser = userRepository.findByEmail(resendDTO.email());
 
 		if (optionalUser.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 		}
 
-		User user = optionalUser.get();
+		UserDetailsImpl user = optionalUser.get();
 
 		String token = UUID.randomUUID().toString();
 		user.setVerificationToken(token);
