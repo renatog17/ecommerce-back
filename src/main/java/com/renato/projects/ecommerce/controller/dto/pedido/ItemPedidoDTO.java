@@ -1,6 +1,6 @@
 package com.renato.projects.ecommerce.controller.dto.pedido;
 
-public record ItemPedido(
+public record ItemPedidoDTO(
 		Long idProduto,
 		Long qtd) {
 

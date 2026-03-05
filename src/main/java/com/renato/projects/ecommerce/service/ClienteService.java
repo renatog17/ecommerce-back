@@ -8,24 +8,35 @@ import org.springframework.web.server.ResponseStatusException;
 import com.renato.projects.ecommerce.controller.dto.cliente.PutClienteDTO;
 import com.renato.projects.ecommerce.controller.dto.cliente.ReadClienteDTO;
 import com.renato.projects.ecommerce.domain.Cliente;
+import com.renato.projects.ecommerce.domain.Pedido;
 import com.renato.projects.ecommerce.domain.UserDetailsImpl;
+import com.renato.projects.ecommerce.domain.enums.Status;
 import com.renato.projects.ecommerce.repository.ClienteRepository;
+import com.renato.projects.ecommerce.repository.PedidoRepository;
 
 @Service
 public class ClienteService {
 
 	private AuthenticatedUserService authenticatedUserService;
 	private ClienteRepository clienteRepository;
+	private PedidoRepository pedidoRepository;
 
-	public ClienteService(ClienteRepository clienteRepository, AuthenticatedUserService authenticatedUserService) {
+	public ClienteService(ClienteRepository clienteRepository, AuthenticatedUserService authenticatedUserService,
+			PedidoRepository pedidoRepository) {
 		super();
 		this.clienteRepository = clienteRepository;
 		this.authenticatedUserService = authenticatedUserService;
+		this.pedidoRepository = pedidoRepository;
 	}
 
 	@Transactional
 	public Cliente salvarCliente (Cliente cliente) {
-		return clienteRepository.save(cliente);
+		clienteRepository.save(cliente);
+		Pedido pedido = new Pedido();
+		pedido.setStatus(Status.INICIADO);
+		pedido.setCliente(cliente);
+		pedidoRepository.save(pedido);
+		return cliente;
 	}
 	
 	public ReadClienteDTO buscarCliente(Long id) {

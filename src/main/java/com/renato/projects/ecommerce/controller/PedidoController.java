@@ -1,17 +1,14 @@
 package com.renato.projects.ecommerce.controller;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import com.renato.projects.ecommerce.controller.dto.pedido.PostPedidoDTO;
+import com.renato.projects.ecommerce.controller.dto.pedido.ItemPedidoDTO;
 import com.renato.projects.ecommerce.controller.dto.pedido.ReadPedidoDTO;
 import com.renato.projects.ecommerce.service.PedidoService;
 
@@ -27,9 +24,10 @@ public class PedidoController {
 		this.pedidoService = pedidoService;
 	}	
 	
-	@PostMapping
-	public ResponseEntity<?> postPedido(@RequestBody PostPedidoDTO dto, UriComponentsBuilder uriBuilder) {
-		  	ReadPedidoDTO pedido = pedidoService.criarPedido(dto);
+	@PatchMapping("/cart")
+	public ResponseEntity<?> addItem(@RequestBody ItemPedidoDTO dto) {
+		
+		  	ReadPedidoDTO pedido = pedidoService.addItem(dto);
 		    return ResponseEntity.ok(pedido);
 	}
 	
@@ -39,9 +37,9 @@ public class PedidoController {
 		return ResponseEntity.ok().build();
 	}
 	
-	@GetMapping("/iniciado")
-	public ResponseEntity<?> obterPedidoComStatusIniciadoDoClienteAutenticado(){
-		return ResponseEntity.ok(pedidoService.obterPedidoComStatusIniciadoDoClienteAutenticado());
+	@GetMapping("/cart")
+	public ResponseEntity<?> getCart(){
+		return ResponseEntity.ok(pedidoService.getCart());
 	}
 	
 	@GetMapping()
