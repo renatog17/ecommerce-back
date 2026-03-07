@@ -1,7 +1,7 @@
 CREATE TABLE pedido (
     id BIGSERIAL PRIMARY KEY,
 
-    valor_total NUMERIC(10,2) NOT NULL,
+    valor_total NUMERIC(10,2),
 
     data_iniciacao DATE NOT NULL,
     data_criacao DATE ,
