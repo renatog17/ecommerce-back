@@ -1,0 +1,1 @@
+TRUNCATE TABLE categoria, cliente, endereco, pedido, produto, produto_pedido, users RESTART IDENTITY CASCADE;

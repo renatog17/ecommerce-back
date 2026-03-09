@@ -43,10 +43,10 @@ public class CategoriaService {
 	public void delete(Long id) {
 		Categoria categoria = categoriaRepository.findById(id)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada"));
-		if(categoria.getProduto().size() > 0)
+		//if(categoria.getProduto().size() > 0)
 			categoria.setAtivo(false);
-		else
-			new ResponseStatusException(HttpStatus.CONFLICT, "Essa categoria não pode ser removida pois possui produtos associados");
+		//else
+			//new ResponseStatusException(HttpStatus.CONFLICT, "Essa categoria não pode ser removida pois possui produtos associados");
 	}
 
 	@Transactional
