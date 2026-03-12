@@ -36,7 +36,7 @@ public class CategoriaService {
 	}
 	
 	public List<ReadCategoriaDTO> findAll() {
-		return categoriaRepository.findAll().stream().map(ReadCategoriaDTO::new).collect(Collectors.toList());
+		return categoriaRepository.findAllByAtivoTrue(true).stream().map(ReadCategoriaDTO::new).collect(Collectors.toList());
 	}
 	
 	@Transactional
@@ -58,7 +58,7 @@ public class CategoriaService {
 	}
 
 	public ReadCategoriaDTO findById(Long id) {
-		Categoria categoria = categoriaRepository.findById(id)
+		Categoria categoria = categoriaRepository.findByIdAndAtivoTrue(id, true)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada"));
 		return new ReadCategoriaDTO(categoria);
 	}

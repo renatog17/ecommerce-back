@@ -227,7 +227,7 @@ public class CategoriaControllerTeste {
     
     
     @Test
-    void deveDeletarCategoria() throws Exception {
+    void deveDesativarCategoria() throws Exception {
 
         // Arrange
         Categoria categoria = new Categoria();
@@ -235,13 +235,17 @@ public class CategoriaControllerTeste {
         categoria.setDescricao("Categoria roupas");
         categoria.setAtivo(true);
 
-        Categoria salva = categoriaRepository.save(categoria);
+        Categoria categoriaSalva = categoriaRepository.save(categoria);
 
         // Act
-        mockMvc.perform(delete("/categorias/{id}", salva.getId()))
+        mockMvc.perform(delete("/categorias/{id}", categoriaSalva.getId()))
                 .andExpect(status().isNoContent());
 
         // Assert
-        assertFalse(categoriaRepository.findById(salva.getId()).isPresent());
+        Categoria categoriaAtualizada = categoriaRepository
+                .findById(categoriaSalva.getId())
+                .orElseThrow();
+
+        assertFalse(categoriaAtualizada.getAtivo());
     }
 }
