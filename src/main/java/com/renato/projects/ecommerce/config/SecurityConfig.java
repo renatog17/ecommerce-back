@@ -46,8 +46,8 @@ public class SecurityConfig {
                         .requestMatchers("/email/**").permitAll()
                         .requestMatchers("/password/**").permitAll()
                         //public
-                        .requestMatchers("/produtos/**").permitAll()
-                        .requestMatchers("/categorias/**").permitAll()
+                        //.requestMatchers("/produtos/**").permitAll()
+                        //.requestMatchers("/categorias/**").permitAll()
                         //.requestMatchers("/user").authenticated()
                         .anyRequest().authenticated()
                 )

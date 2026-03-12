@@ -31,6 +31,8 @@ public class CategoriaController {
 		this.categoriaService = categoriaService;
 	}
 	
+
+	
 	@PostMapping
 	public ResponseEntity<?> postCategoria(@Valid @RequestBody PostCategoriaDTO dto, UriComponentsBuilder uriBuilder){
 		ReadCategoriaDTO readCategoriaDTO = categoriaService.postCategoria(dto);
