@@ -3,6 +3,7 @@ package com.renato.projects.ecommerce.controller;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,9 +31,9 @@ public class CategoriaController {
 		super();
 		this.categoriaService = categoriaService;
 	}
-	
 
-	
+
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	@PostMapping
 	public ResponseEntity<?> postCategoria(@Valid @RequestBody PostCategoriaDTO dto, UriComponentsBuilder uriBuilder){
 		ReadCategoriaDTO readCategoriaDTO = categoriaService.postCategoria(dto);
@@ -49,12 +50,13 @@ public class CategoriaController {
 	public ResponseEntity<?> getById(@PathVariable Long id){
 		return ResponseEntity.ok(categoriaService.findById(id));
 	}
-	
+
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	@PatchMapping("/{id}")
 	public ResponseEntity<?> patchCategoria(@Valid @RequestBody PatchCategoriaDTO dto, @PathVariable Long id){
 		return ResponseEntity.ok(categoriaService.editDescricaoById(id, dto));
 	}
-	
+	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteCategoria(@PathVariable Long id){
 		categoriaService.delete(id);
