@@ -2,8 +2,13 @@ package com.renato.projects.ecommerce.service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import com.renato.projects.ecommerce.domain.Role;
+import com.renato.projects.ecommerce.domain.enums.RoleName;
+import com.renato.projects.ecommerce.repository.RoleRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,16 +30,18 @@ public class UserService {
 	private final IEmailTemplate<ConfirmEmailContext> emailTemplate;
 	private final EmailService emailService;
 	private ClienteService clienteService;
+	private RoleRepository roleRepository;
 
 	public UserService(UserRepository userRepository, PasswordEncoder encoder, 
 			IEmailTemplate<ConfirmEmailContext> emailTemplate, EmailService emailService,
-			ClienteService clienteService) {
+			ClienteService clienteService, RoleRepository roleRepository) {
 		super();
 		this.encoder = encoder;
 		this.userRepository = userRepository;
 		this.emailTemplate = emailTemplate;
 		this.emailService = emailService;
 		this.clienteService = clienteService;
+		this.roleRepository = roleRepository;
 	}
 
 	@Transactional
@@ -48,7 +55,14 @@ public class UserService {
 		String token = UUID.randomUUID().toString();
 		user.setVerificationToken(token);
 		user.setTokenExpiry(Instant.now().plus(1, ChronoUnit.HOURS));
+
+		Role roleCustomer = roleRepository
+				.findByName(RoleName.ROLE_CUSTOMER)
+				.orElseThrow(() -> new RuntimeException("Role not found"));
+
+		user.setRoles(Set.of(roleCustomer));
 		userRepository.save(user);
+
 		
 		Cliente cliente = userDTO.cliente().toModel();
 		cliente.setUser(user);
