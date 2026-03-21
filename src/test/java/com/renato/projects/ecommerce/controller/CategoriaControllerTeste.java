@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.renato.projects.ecommerce.domain.Role;
+import com.renato.projects.ecommerce.domain.enums.RoleName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.renato.projects.ecommerce.domain.Categoria;
 import com.renato.projects.ecommerce.domain.UserDetailsImpl;
 import com.renato.projects.ecommerce.repository.CategoriaRepository;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,6 +49,13 @@ public class CategoriaControllerTeste {
             "renato@email.com",
             "123"
         );
+
+        Role role = new Role();
+        role.setName(RoleName.ROLE_CUSTOMER);
+
+        Set<Role> roles = new HashSet<Role>();
+        roles.add(role);
+        user.setRoles(roles);
 
         Authentication authentication =
             new UsernamePasswordAuthenticationToken(

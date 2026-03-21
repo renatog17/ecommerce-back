@@ -79,7 +79,7 @@ public class PedidoService {
 		if(dto.qtd() > produto.getQuantidade())
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A quantidade disponível mudou");
 		
-		Long qtdASerComprada = Math.max(dto.qtd(), produto.getQuantidade());
+		Long qtdASerComprada = dto.qtd();
 		pp.setProduto(produto);
 		pp.setPedido(pedido);
 		pp.setQuantidade(pp.getQuantidade() + qtdASerComprada);
