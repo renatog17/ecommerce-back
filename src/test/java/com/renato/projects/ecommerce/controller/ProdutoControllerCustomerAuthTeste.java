@@ -1,17 +1,18 @@
 package com.renato.projects.ecommerce.controller;
 
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.renato.projects.ecommerce.domain.Role;
+import com.renato.projects.ecommerce.domain.enums.RoleName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ import com.renato.projects.ecommerce.repository.ProdutoRepository;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Sql(value = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class ProdutoControllerTeste {
+public class ProdutoControllerCustomerAuthTeste {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -46,31 +47,38 @@ public class ProdutoControllerTeste {
 	@Autowired
 	private CategoriaRepository categoriaRepository;
 
-    @BeforeEach
-    void autenticar() {
+	@BeforeEach
+	void autenticar() {
 
-        UserDetailsImpl user = new UserDetailsImpl(
-            "renato@email.com",
-            "123"
-        );
+		UserDetailsImpl user = new UserDetailsImpl(
+				"renato@email.com",
+				"123"
+		);
 
-        Authentication authentication =
-            new UsernamePasswordAuthenticationToken(
-                user,
-                null,
-                user.getAuthorities()
-            );
+		Role role = new Role();
+		role.setName(RoleName.ROLE_CUSTOMER);
 
-        SecurityContextHolder.getContext()
-                .setAuthentication(authentication);
-    }
+		Set<Role> roles = new HashSet<Role>();
+		roles.add(role);
+		user.setRoles(roles);
+
+		Authentication authentication =
+				new UsernamePasswordAuthenticationToken(
+						user,
+						null,
+						user.getAuthorities()
+				);
+
+		SecurityContextHolder.getContext()
+				.setAuthentication(authentication);
+	}
 	
 	// ===============================
 	// POST
 	// ===============================
 
 	@Test
-	void deveCriarProdutoHappyPath() throws Exception {
+	void naoDevePermitirCustomerDeCriarProdutoHappyPath() throws Exception {
 
 		Categoria categoria = new Categoria();
 		categoria.setNome("Eletrônicos");
@@ -89,11 +97,7 @@ public class ProdutoControllerTeste {
 				""";
 
 		mockMvc.perform(post("/produtos").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated()).andExpect(header().exists("Location"))
-				.andExpect(header().string("Location", endsWith("/produtos/1")))
-				.andExpect(jsonPath("$.descricao").value("Notebook Lenovo"))
-				.andExpect(jsonPath("$.nome").value("Notebook")).andExpect(jsonPath("$.preco").value(3500))
-				.andExpect(jsonPath("$.quantidade").value(10)).andExpect(jsonPath("$.categoria.id").value(1));
+				.andExpect(status().isForbidden());
 	}
 
 	@Test
@@ -119,36 +123,6 @@ public class ProdutoControllerTeste {
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$[0].field").value("nome"))
 				.andExpect(jsonPath("$[0].status").value(400)).andExpect(jsonPath("$[0].path").value("/produtos"))
 				.andExpect(jsonPath("$[0].message").value("Nome do produto não pode estar em branco"));
-	}
-
-	@Test
-	void podeCriarProdutoHSemDescricao() throws Exception {
-
-		Categoria categoria = new Categoria();
-		categoria.setNome("Eletrônicos");
-		categoria.setDescricao("Categoria tech");
-		categoria.setAtivo(true);
-		categoriaRepository.save(categoria);
-
-		String json = """
-				{
-				    "nome": "Notebook",
-				    "quantidade": "10",
-				    "preco": 3500,
-				    "idCategoria": 1
-				}
-				""";
-
-		mockMvc.perform(post("/produtos").contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isCreated())
-				.andExpect(header().exists("Location"))
-				.andExpect(header().string("Location", endsWith("/produtos/1")))
-				.andExpect(jsonPath("$.id").value(1))
-				.andExpect(jsonPath("$.descricao").value(nullValue()))
-				.andExpect(jsonPath("$.nome").value("Notebook"))
-				.andExpect(jsonPath("$.preco").value(3500))
-				.andExpect(jsonPath("$.quantidade").value(10))
-				.andExpect(jsonPath("$.categoria.id").value(1));
 	}
 
 	@Test
@@ -622,7 +596,7 @@ public class ProdutoControllerTeste {
 	// ===============================
 
 	@Test
-	void deveEditarPrecoHappyPath() throws Exception {
+	void naoDevePermitirCustomerDeEditarPrecoHappyPath() throws Exception {
 
 		Categoria c1 = new Categoria();
 		c1.setAtivo(true);
@@ -641,12 +615,12 @@ public class ProdutoControllerTeste {
 
 		String json = """
 				{
-				    "novoPreco": "3500.00"
+				    "novoPreco": 3500.00
 				}
 				""";
 
 		mockMvc.perform(patch("/produtos/{id}/alterar-preco", salvo.getId()).contentType(MediaType.APPLICATION_JSON)
-				.content(json)).andExpect(status().isOk());
+				.content(json)).andExpect(status().isForbidden());
 	}
 
 	@Test

@@ -71,7 +71,7 @@ public class ProdutoController {
 
 	@PreAuthorize("hasRole('ROLE_EMPLOYEE')")
 	@PatchMapping("/{id}/alterar-preco")
-	public ResponseEntity<?> alterarPreco(@PathVariable Long id, @Valid AlterarPrecoProdutoDTO dto) {
+	public ResponseEntity<?> alterarPreco(@PathVariable Long id, @Valid @RequestBody AlterarPrecoProdutoDTO dto) {
 		service.alterarPrecoProduto(id, dto);
 		return ResponseEntity.ok().build();
 	}

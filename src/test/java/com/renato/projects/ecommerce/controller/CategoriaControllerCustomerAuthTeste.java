@@ -1,11 +1,9 @@
 package com.renato.projects.ecommerce.controller;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,7 +33,7 @@ import java.util.Set;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Sql(value = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class CategoriaControllerTeste {
+public class CategoriaControllerCustomerAuthTeste {
 
     @Autowired
     private MockMvc mockMvc;
@@ -69,7 +67,7 @@ public class CategoriaControllerTeste {
     }
     
 	@Test
-    void deveCriarCategoria() throws Exception {
+    void deveProibirCustomerDeCriarCategoria() throws Exception {
 
         String json = """
             {
@@ -83,35 +81,7 @@ public class CategoriaControllerTeste {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
         )
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(header().exists("Location"))
-                .andExpect(header().string("Location", "http://localhost/categorias/1"))
-                .andExpect(jsonPath("$.descricao").value("Produtos eletrônicos"))
-                .andExpect(jsonPath("$.nome").value("Eletrônicos"));
-    }
-    
-    @Test
-    void naoDeveCriarCategoriaComNomeEmBranco() throws Exception {
-
-        String json = """
-            {
-                "nome": "",
-                "descricao": "teste"
-            }
-            """;
-
-        mockMvc.perform(
-                post("/categorias")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json)
-        )
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$[0].field").value("nome"))
-                .andExpect(jsonPath("$[0].status").value(400))
-                .andExpect(jsonPath("$[0].path").value("/categorias"))
-        		.andExpect(jsonPath("$[0].message")
-        				.value("Nome da categoria não pode estar em branco"));
+                .andExpect(status().isForbidden());
     }
  
     @Test
@@ -210,7 +180,7 @@ public class CategoriaControllerTeste {
     
    
     @Test
-    void deveAtualizarDescricao() throws Exception {
+    void deveProibirCustomerDeAtualizarDescricao() throws Exception {
 
         // Arrange
         Categoria categoria = new Categoria();
@@ -230,40 +200,11 @@ public class CategoriaControllerTeste {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(patchJson)
         )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(salva.getId()))
-                .andExpect(jsonPath("$.nome").value("Games"))
-                .andExpect(jsonPath("$.descricao").value("Nova descrição"));
+                .andExpect(status().isForbidden());
     }
-    
+
     @Test
-    void naoDeveAtualizarDescricaoCampoInvalido() throws Exception {
-
-        Categoria categoria = new Categoria();
-        categoria.setNome("Games");
-        categoria.setDescricao("Categoria antiga");
-        categoria.setAtivo(true);
-
-        Categoria salva = categoriaRepository.save(categoria);
-
-        String patchJson = """
-            {
-                "descricao": ""
-            }
-            """;
-        mockMvc.perform(
-                patch("/categorias/{id}", salva.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(patchJson)
-        )
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$[0].field").value("descricao"))
-                .andExpect(jsonPath("$[0].message").value("Descrição não pode estar em branco"));
-    }
-    
-    
-    @Test
-    void deveDesativarCategoria() throws Exception {
+    void deveProibirCustomerDeDesativarCategoria() throws Exception {
 
         // Arrange
         Categoria categoria = new Categoria();
@@ -275,13 +216,6 @@ public class CategoriaControllerTeste {
 
         // Act
         mockMvc.perform(delete("/categorias/{id}", categoriaSalva.getId()))
-                .andExpect(status().isNoContent());
-
-        // Assert
-        Categoria categoriaAtualizada = categoriaRepository
-                .findById(categoriaSalva.getId())
-                .orElseThrow();
-
-        assertFalse(categoriaAtualizada.getAtivo());
+                .andExpect(status().isForbidden());
     }
 }
