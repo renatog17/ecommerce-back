@@ -48,6 +48,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/user").permitAll()
 						.requestMatchers("/email/**").permitAll()
 						.requestMatchers("/password/**").permitAll()
+						.requestMatchers(HttpMethod.POST,"/actuator/startup").permitAll()
 
 						// catálogo público
 						.requestMatchers(HttpMethod.GET, "/produtos/**").permitAll()

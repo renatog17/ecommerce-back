@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(name = "roles")
 public class Role {
 
     @Id

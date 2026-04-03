@@ -22,7 +22,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Cliente {
+public class 	Cliente {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
