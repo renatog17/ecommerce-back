@@ -53,7 +53,8 @@ public class PedidoControllerTeste {
     private EnderecoRepository enderecoRepository;
     @Autowired
     private ProdutoPedidoRepository produtoPedidoRepository;
-
+    private Pedido pedido;
+    private Produto produto;
     @BeforeEach
     @Transactional
     void autenticar() {
@@ -62,7 +63,7 @@ public class PedidoControllerTeste {
                         .comNome("Videogames")
                         .build();
 
-        Produto produto = new ProdutoBuilder()
+        produto = new ProdutoBuilder()
                         .comNome("Switch")
                         .comPreco(BigDecimal.valueOf(3500))
                         .comCategoria(categoria)
@@ -83,7 +84,7 @@ public class PedidoControllerTeste {
         cliente.setEndereco(List.of(endereco));
         endereco.setCliente(cliente);
 
-        Pedido pedido = new PedidoBuilder()
+        pedido = new PedidoBuilder()
                         .comCliente(cliente)
                         .build();
         cliente.setPedidos(List.of(pedido));
@@ -140,8 +141,41 @@ public class PedidoControllerTeste {
     }
 
     @Test
-    public void deveAdicionarNovoItemAoCarrinhoQuandoOItemExistirNoCarrinho(){
+    public void deveAdicionarNovoItemAoCarrinhoQuandoOItemExistirNoCarrinho() throws Exception {
+        ProdutoPedido pp = new ProdutoPedido();
+        pp.setPedido(pedido);
+        pp.setProduto(produto);
+        pp.setQuantidade(1L);
+        pedido.setProdutosPedidos(List.of(pp));
+        produtoPedidoRepository.save(pp);
 
+        String json = """
+            {
+                "idProduto": 1,
+                "qtd": 1
+            }
+            """;
+
+        mockMvc.perform(
+                        patch("/pedidos/cart")
+                                .with(user(user))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json)
+                )
+                .andExpect(status().isOk());
+
+        ProdutoPedido item = produtoPedidoRepository
+                .findByProdutoIdAndPedidoId(1L, pedido.getId())
+                .orElseThrow();
+
+        // ✔ quantidade aumentada para 2
+        assertEquals(2L, item.getQuantidade());
+
+        // ✔ valor unitário mantém correto
+        assertEquals(0, item.getValorUnitario().compareTo(BigDecimal.valueOf(3500)));
+
+        // ✔ associação correta
+        assertEquals(pedido.getId(), item.getPedido().getId());
     }
 
     @Test
